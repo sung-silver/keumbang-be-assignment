@@ -21,9 +21,10 @@ public class JwtTokenProvider {
   private final Long accessTokenExpirationPeriod;
   private final Long refreshTokenExpirationPeriod;
 
-  public JwtTokenProvider(@Value("${jwt.secretKey}") final String secretKey,
-                          @Value("${jwt.access.expiration}") final Long accessTokenExpirationPeriod,
-                          @Value("${jwt.refresh.expiration}") final Long refreshTokenExpirationPeriod) {
+  public JwtTokenProvider(
+      @Value("${jwt.secretKey}") final String secretKey,
+      @Value("${jwt.access.expiration}") final Long accessTokenExpirationPeriod,
+      @Value("${jwt.refresh.expiration}") final Long refreshTokenExpirationPeriod) {
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     this.key = Keys.hmacShaKeyFor(keyBytes);
     this.accessTokenExpirationPeriod = accessTokenExpirationPeriod;
@@ -38,6 +39,18 @@ public class JwtTokenProvider {
         .claim(MEMBER_ID_CLAIM, memberId)
         .setIssuedAt(now)
         .setExpiration(new Date(now.getTime() + accessTokenExpirationPeriod))
+        .signWith(key, SignatureAlgorithm.HS256)
+        .compact();
+  }
+
+  public String createRefreshToken(final Long memberId) {
+    Date now = new Date();
+
+    return Jwts.builder()
+        .setSubject(REFRESH_TOKEN_SUBJECT)
+        .claim(MEMBER_ID_CLAIM, memberId)
+        .setIssuedAt(now)
+        .setExpiration(new Date(now.getTime() + refreshTokenExpirationPeriod))
         .signWith(key, SignatureAlgorithm.HS256)
         .compact();
   }
