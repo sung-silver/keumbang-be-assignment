@@ -2,6 +2,7 @@ package com.keumbang.auth.common.jwt;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ public class JwtTokenProvider {
   private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
   private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
   private static final String MEMBER_ID_CLAIM = "memberId";
+  private static final String ROLE_CLAIM = "roles";
 
   private final Key key;
   private final Long accessTokenExpirationPeriod;
@@ -31,12 +33,13 @@ public class JwtTokenProvider {
     this.refreshTokenExpirationPeriod = refreshTokenExpirationPeriod;
   }
 
-  public String createAccessToken(final Long memberId) {
+  public String createAccessToken(final Long memberId, final List<String> roles) {
     Date now = new Date();
 
     return Jwts.builder()
         .setSubject(ACCESS_TOKEN_SUBJECT)
         .claim(MEMBER_ID_CLAIM, memberId)
+        .claim(ROLE_CLAIM, roles)
         .setIssuedAt(now)
         .setExpiration(new Date(now.getTime() + accessTokenExpirationPeriod))
         .signWith(key, SignatureAlgorithm.HS256)
