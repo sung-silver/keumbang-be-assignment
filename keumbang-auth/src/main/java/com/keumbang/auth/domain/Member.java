@@ -36,11 +36,10 @@ public class Member {
   private String refreshToken;
 
   @Builder
-  private Member(String username, String email, String password, String refreshToken) {
+  private Member(String username, String email, String password) {
     this.role = MemberRole.USER;
     this.username = username;
     this.email = email;
     this.password = password;
-    this.refreshToken = refreshToken;
   }
 }
