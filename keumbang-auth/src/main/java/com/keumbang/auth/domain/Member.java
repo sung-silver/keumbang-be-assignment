@@ -36,9 +36,8 @@ public class Member {
   private String refreshToken;
 
   @Builder
-  private Member(
-      MemberRole role, String username, String email, String password, String refreshToken) {
-    this.role = role;
+  private Member(String username, String email, String password, String refreshToken) {
+    this.role = MemberRole.USER;
     this.username = username;
     this.email = email;
     this.password = password;
