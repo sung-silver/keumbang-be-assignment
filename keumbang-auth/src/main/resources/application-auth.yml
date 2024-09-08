@@ -23,3 +23,15 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MariaDBDialect
+
+
+jwt:
+  secretKey: ${JWT_SECRET_KEY}
+  header:
+    format: ${JWT_HEADER_FORMAT}
+  access:
+    expiration: ${JWT_ACCESS_TOKEN_EXPIRE_TIME}
+    header: ${JWT_ACCESS_TOKEN_HEADER}
+  refresh:
+    expiration: ${JWT_REFRESH_TOKEN_EXPIRE_TIME}
+    header: ${JWT_REFRESH_TOKEN_HEADER}
