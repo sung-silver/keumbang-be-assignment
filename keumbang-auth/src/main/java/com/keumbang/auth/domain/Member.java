@@ -6,6 +6,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 
 import com.keumbang.auth.domain.enums.MemberRole;
@@ -16,6 +18,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(
+    uniqueConstraints = {
+      @UniqueConstraint(
+          name = "UK_EMAIL",
+          columnNames = {"email"})
+    })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Member {
