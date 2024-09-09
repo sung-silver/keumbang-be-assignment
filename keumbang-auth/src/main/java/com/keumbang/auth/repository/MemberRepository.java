@@ -20,10 +20,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
   void updateRefreshToken(
       @Param("memberId") final Long memberId, @Param("refreshToken") final String refreshToken);
 
-  Optional<Member> findByEmailAndPassword(final String email, final String password);
+  Optional<Member> findByEmail(final String email);
 
-  default Member findByEmailAndPasswordOrThrow(final String email, final String password) {
-    return findByEmailAndPassword(email, password)
-        .orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER));
+  default Member findByEmailOrThrow(final String email) {
+    return findByEmail(email).orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER));
   }
 }
