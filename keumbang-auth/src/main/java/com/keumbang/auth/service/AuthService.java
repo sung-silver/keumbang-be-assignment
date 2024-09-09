@@ -29,6 +29,12 @@ public class AuthService {
 
   @Transactional
   public GetTokenResponse signUp(final SignUpRequest request) {
+    boolean isEmailExist = memberRepository.findByEmail(request.email()).isPresent();
+
+    if (isEmailExist) {
+      throw new CustomException(DUPLICATED_EMAIL);
+    }
+
     String encodedPassword = passwordService.encodePassword(request.password());
     final Member member =
         Member.builder()
