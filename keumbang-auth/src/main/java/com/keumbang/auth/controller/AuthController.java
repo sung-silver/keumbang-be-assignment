@@ -26,6 +26,6 @@ public class AuthController {
   public ResponseEntity<GetTokenResponse> signUp(@RequestBody @Valid final SignUpRequest request) {
     GetTokenResponse response = authService.signUp(request);
     URI uri = URI.create("/members/" + response.memberId());
-    return ResponseEntity.created(uri).body(authService.signUp(request));
+    return ResponseEntity.created(uri).body(response);
   }
 }
