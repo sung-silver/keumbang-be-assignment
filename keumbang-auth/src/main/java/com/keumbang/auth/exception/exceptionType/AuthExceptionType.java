@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 public enum AuthExceptionType implements ExceptionType {
 
   // 400 Bad Request
+  DUPLICATED_EMAIL(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다"),
   INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다"),
   // 404 Internal Server Error
   NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, "해당하는 회원을 찾을 수 없습니다");
