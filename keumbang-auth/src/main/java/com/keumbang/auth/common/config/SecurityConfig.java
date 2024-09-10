@@ -23,7 +23,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  public static final String[] PERMIT_PATH = {"/auth/login", "/auth/sign-up", "/auth/reissue"};
+  public static final String[] PERMIT_PATH = {
+    "/auth/login",
+    "/auth/sign-up",
+    "/auth/reissue",
+    "/webjars/**",
+    "/swagger-resources/**",
+    "/swagger-ui/**",
+    "/v3/api-docs/**",
+    "/webjars/**",
+    "/auth/**",
+    "/login/**",
+    "/css/**",
+    "/images/**",
+    "/js/**",
+    "/h2-console/**",
+  };
+
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final JwtExceptionFilter jwtExceptionFilter;
 
