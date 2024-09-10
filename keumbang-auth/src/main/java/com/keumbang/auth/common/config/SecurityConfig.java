@@ -16,6 +16,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class SecurityConfig {
 
+  public static final String[] PERMIT_PATH = {"/auth/login", "/auth/sign-up", "/auth/reissue"};
+
   @Bean
   public WebMvcConfigurer corsConfigurer() {
     return new WebMvcConfigurer() {
@@ -46,7 +48,11 @@ public class SecurityConfig {
         .headers(
             headerConfig ->
                 headerConfig.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-        .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll());
+        .authorizeHttpRequests(
+            auth -> {
+              auth.requestMatchers(PERMIT_PATH).permitAll();
+              auth.requestMatchers("/auth/withdraw").authenticated();
+            });
     return http.build();
   }
 
