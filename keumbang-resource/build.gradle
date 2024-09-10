@@ -34,9 +34,9 @@ dependencies {
 	// validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-	// security
-	implementation "org.springframework.security:spring-security-web"
-	implementation "org.springframework.security:spring-security-config"
+//	// security
+//	implementation "org.springframework.security:spring-security-web"
+//	implementation "org.springframework.security:spring-security-config"
 
 	// swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
