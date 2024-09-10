@@ -65,7 +65,6 @@ public class Order extends BaseTimeEntity {
       OrderType orderType,
       BigDecimal orderQuantity,
       long orderPrice,
-      OrderStatus orderStatus,
       String deliveryAddressInfo) {
     this.orderId = createOrderId(customerId, product.getProductId(), orderType);
     this.product = product;
@@ -73,7 +72,7 @@ public class Order extends BaseTimeEntity {
     this.orderType = orderType;
     this.orderQuantity = orderQuantity;
     this.orderPrice = orderPrice;
-    this.orderStatus = orderStatus;
+    this.orderStatus = OrderStatus.ORDERED;
     this.deliveryAddressInfo = deliveryAddressInfo;
   }
 
