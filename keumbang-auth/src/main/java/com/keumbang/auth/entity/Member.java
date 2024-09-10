@@ -1,4 +1,4 @@
-package com.keumbang.auth.domain;
+package com.keumbang.auth.entity;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-import com.keumbang.auth.domain.enums.MemberRole;
+import com.keumbang.auth.entity.enums.MemberRole;
 
 import lombok.AccessLevel;
 import lombok.Builder;

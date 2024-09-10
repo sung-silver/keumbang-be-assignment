@@ -1,4 +1,4 @@
-package com.keumbang.auth.domain;
+package com.keumbang.auth.entity;
 
 import java.time.LocalDateTime;
 

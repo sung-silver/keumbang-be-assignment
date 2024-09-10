@@ -1,4 +1,4 @@
-package com.keumbang.auth.domain.enums;
+package com.keumbang.auth.entity.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
