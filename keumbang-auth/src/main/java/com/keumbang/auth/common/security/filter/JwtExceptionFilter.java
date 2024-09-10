@@ -7,12 +7,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.keumbang.auth.common.response.ErrorResponse;
 import com.keumbang.auth.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
@@ -30,10 +30,10 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     try {
       filterChain.doFilter(request, response);
     } catch (CustomException e) {
-      response.setStatus(HttpStatus.UNAUTHORIZED.value());
+      response.setStatus(e.getExceptionType().getHttpStatusCode());
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       response.setCharacterEncoding("UTF-8");
-      String error = objectMapper.writeValueAsString(e.getExceptionType().message());
+      String error = objectMapper.writeValueAsString(ErrorResponse.of(e.getExceptionType()));
       response.getWriter().write(error);
     }
   }
