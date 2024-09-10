@@ -4,12 +4,16 @@ import static com.keumbang.auth.exception.exceptionType.AuthExceptionType.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,21 +28,27 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
-import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class JwtTokenService {
   private static final String MEMBER_ID_CLAIM = "memberId";
-
-  @Value("${jwt.header.format}")
+  private static final String ROLE_CLAIM = "roles";
   public static String AUTHORIZATION_FORMAT;
-
-  @Value("${jwt.access.header}")
   public static String ACCESS_TOKEN_HEADER;
 
   private final JwtTokenProvider jwtTokenProvider;
   private final MemberRepository memberRepository;
+
+  public JwtTokenService(
+      @Value("${jwt.header.format}") String authorizationFormat,
+      @Value("${jwt.access.header}") String accessTokenHeader,
+      JwtTokenProvider jwtTokenProvider,
+      MemberRepository memberRepository) {
+    this.AUTHORIZATION_FORMAT = authorizationFormat;
+    this.ACCESS_TOKEN_HEADER = accessTokenHeader;
+    this.jwtTokenProvider = jwtTokenProvider;
+    this.memberRepository = memberRepository;
+  }
 
   @Transactional
   public GetTokenResponse issueToken(final MemberAuthVO memberAuthVO) {
@@ -91,9 +101,26 @@ public class JwtTokenService {
     return !tokenClaims.getExpiration().before(new Date());
   }
 
+  public boolean validateAccessToken(final String atk) {
+    Claims tokenClaims = jwtTokenProvider.getTokenClaims(atk);
+    return !tokenClaims.getExpiration().before(new Date());
+  }
+
   public String extractMemberIdFromRefreshToken(final String rtk) {
     Claims tokenClaims = jwtTokenProvider.getTokenClaims(rtk);
     return tokenClaims.get(MEMBER_ID_CLAIM).toString();
+  }
+
+  public String extractMemberIdFromAccessToken(final String atk) {
+    Claims tokenClaims = jwtTokenProvider.getTokenClaims(atk);
+    return tokenClaims.get(MEMBER_ID_CLAIM).toString();
+  }
+
+  public Collection<? extends GrantedAuthority> getAuthoritiesFromAccessToken(String accessToken) {
+    Claims claims = jwtTokenProvider.getTokenClaims(accessToken);
+    List<String> roles = claims.get(ROLE_CLAIM, List.class);
+
+    return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
   }
 
   public String getAuthorizationAccessToken(HttpServletRequest request) {
