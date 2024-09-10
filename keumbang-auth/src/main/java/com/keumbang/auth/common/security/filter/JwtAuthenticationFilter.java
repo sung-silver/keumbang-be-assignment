@@ -7,6 +7,8 @@ import static com.keumbang.auth.exception.exceptionType.AuthExceptionType.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -56,8 +59,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       jwtTokenService.validateAccessToken(accessToken);
 
       String memberId = jwtTokenService.extractMemberIdFromAccessToken(accessToken);
-      Collection<? extends GrantedAuthority> authorities =
-          jwtTokenService.getAuthoritiesFromAccessToken(accessToken);
+      List<String> roles = jwtTokenService.extractRolesFromAccessToken(accessToken);
+      Collection<? extends GrantedAuthority> authorities = getAuthoritiesFromList(roles);
       MemberAuthentication memberAuthentication =
           new MemberAuthentication(memberId, null, authorities);
 
@@ -72,6 +75,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     filterChain.doFilter(request, response);
+  }
+
+  private Collection<? extends GrantedAuthority> getAuthoritiesFromList(List<String> roles) {
+    return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
   }
 
   private boolean containsAccessToken(HttpServletRequest request) {
