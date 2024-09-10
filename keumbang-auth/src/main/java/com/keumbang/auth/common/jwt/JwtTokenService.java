@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -114,7 +115,10 @@ public class JwtTokenService {
 
   public List<String> extractRolesFromAccessToken(String accessToken) {
     Claims claims = jwtTokenProvider.getTokenClaims(accessToken);
-    return claims.get(ROLE_CLAIM, List.class);
+    List<?> roles = claims.get(ROLE_CLAIM, List.class);
+    return roles.stream()
+        .map(Object::toString)
+        .collect(Collectors.toList());
   }
 
   public String getAuthorizationAccessToken(HttpServletRequest request) {
