@@ -10,13 +10,22 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.keumbang.auth.common.security.filter.JwtAuthenticationFilter;
+import com.keumbang.auth.common.security.filter.JwtExceptionFilter;
+
+import lombok.RequiredArgsConstructor;
+
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
   public static final String[] PERMIT_PATH = {"/auth/login", "/auth/sign-up", "/auth/reissue"};
+  private final JwtAuthenticationFilter jwtAuthenticationFilter;
+  private final JwtExceptionFilter jwtExceptionFilter;
 
   @Bean
   public WebMvcConfigurer corsConfigurer() {
@@ -51,8 +60,11 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             auth -> {
               auth.requestMatchers(PERMIT_PATH).permitAll();
-              auth.requestMatchers("/auth/withdraw").authenticated();
-            });
+              auth.requestMatchers("/auth/withdraw").permitAll();
+            })
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
+    ;
     return http.build();
   }
 
