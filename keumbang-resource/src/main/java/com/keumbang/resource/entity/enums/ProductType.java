@@ -1,10 +1,8 @@
 package com.keumbang.resource.entity.enums;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
-@Getter
+@RequiredArgsConstructor
 public enum ProductType {
   SELL("판매용"),
   PURCHASE("매입용");
