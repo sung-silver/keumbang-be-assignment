@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.keumbang.auth.domain.Member;
+import com.keumbang.auth.entity.Member;
 import com.keumbang.auth.exception.CustomException;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {

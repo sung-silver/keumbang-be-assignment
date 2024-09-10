@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.keumbang.auth.controller.dto.request.ReissueRequest;
 import com.keumbang.auth.controller.dto.response.GetTokenResponse;
-import com.keumbang.auth.domain.Member;
+import com.keumbang.auth.entity.Member;
 import com.keumbang.auth.exception.CustomException;
 import com.keumbang.auth.repository.MemberRepository;
 import com.keumbang.auth.service.vo.MemberAuthVO;
