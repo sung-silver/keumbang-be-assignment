@@ -5,6 +5,8 @@ import java.net.URI;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,10 +21,12 @@ import com.keumbang.auth.controller.dto.response.GetTokenResponse;
 import com.keumbang.auth.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
   private final AuthService authService;
   private final JwtTokenService jwtTokenService;
@@ -47,7 +51,9 @@ public class AuthController {
 
   @DeleteMapping("/withdraw")
   public ResponseEntity<Void> withdraw() {
-    Long memberId = 1L;
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    Long memberId = Long.valueOf((String) authentication.getPrincipal());
+    log.info(String.valueOf(memberId));
     authService.withdraw(memberId);
     return ResponseEntity.noContent().build();
   }
