@@ -116,9 +116,7 @@ public class JwtTokenService {
   public List<String> extractRolesFromAccessToken(String accessToken) {
     Claims claims = jwtTokenProvider.getTokenClaims(accessToken);
     List<?> roles = claims.get(ROLE_CLAIM, List.class);
-    return roles.stream()
-        .map(Object::toString)
-        .collect(Collectors.toList());
+    return roles.stream().map(Object::toString).collect(Collectors.toList());
   }
 
   public String getAuthorizationAccessToken(HttpServletRequest request) {
