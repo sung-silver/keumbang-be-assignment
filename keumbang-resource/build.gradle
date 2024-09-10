@@ -38,6 +38,9 @@ dependencies {
 	implementation "org.springframework.security:spring-security-web"
 	implementation "org.springframework.security:spring-security-config"
 
+	// swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+
 	// test lombok
 	testCompileOnly 'org.projectlombok:lombok:1.18.28'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.28'
