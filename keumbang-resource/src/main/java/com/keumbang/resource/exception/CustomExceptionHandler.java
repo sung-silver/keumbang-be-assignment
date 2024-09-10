@@ -21,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 @Slf4j
 public class CustomExceptionHandler {
+  private static final int FIRST_INDEX = 0;
+
   @ExceptionHandler(CustomException.class)
   public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
     return ResponseEntity.status(ex.getExceptionType().status())
@@ -48,16 +50,15 @@ public class CustomExceptionHandler {
     StringBuilder builder = new StringBuilder();
 
     if (bindingResult.hasErrors()) {
-      for (FieldError fieldError : bindingResult.getFieldErrors()) {
-        builder
-            .append("\n[")
-            .append(fieldError.getField())
-            .append("](은)는 ")
-            .append(fieldError.getDefaultMessage())
-            .append(" 입력된 값: [")
-            .append(fieldError.getRejectedValue())
-            .append("]");
-      }
+      FieldError fieldError = bindingResult.getFieldErrors().get(FIRST_INDEX);
+      builder
+          .append("[")
+          .append(fieldError.getField())
+          .append("](은)는 ")
+          .append(fieldError.getDefaultMessage())
+          .append(" 입력된 값: [")
+          .append(fieldError.getRejectedValue())
+          .append("]");
     }
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
