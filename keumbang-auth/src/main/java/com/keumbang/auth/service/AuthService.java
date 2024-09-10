@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,7 +67,9 @@ public class AuthService {
     return jwtTokenService.issueToken(memberAuthVO);
   }
 
-  public void withdraw(final Long memberId) {
+  public void withdraw() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    Long memberId = Long.valueOf((String) authentication.getPrincipal());
     Member member = memberRepository.findByMemberIdOrThrow(memberId);
     memberRepository.delete(member);
   }
