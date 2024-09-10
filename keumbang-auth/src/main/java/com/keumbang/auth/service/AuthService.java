@@ -64,4 +64,9 @@ public class AuthService {
 
     return jwtTokenService.issueToken(memberAuthVO);
   }
+
+  public void withdraw(final Long memberId) {
+    Member member = memberRepository.findByMemberIdOrThrow(memberId);
+    memberRepository.delete(member);
+  }
 }
