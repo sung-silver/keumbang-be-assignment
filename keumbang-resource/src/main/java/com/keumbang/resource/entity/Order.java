@@ -48,7 +48,7 @@ public class Order extends BaseTimeEntity {
   @Column(precision = 10, scale = 2)
   private BigDecimal orderQuantity;
 
-  private long orderPrice;
+  private BigDecimal orderPrice;
 
   @NotNull
   @Enumerated(EnumType.STRING)
@@ -66,7 +66,7 @@ public class Order extends BaseTimeEntity {
       Long customerId,
       OrderType orderType,
       BigDecimal orderQuantity,
-      long orderPrice,
+      BigDecimal orderPrice,
       String deliveryAddressInfo) {
     this.orderId = createOrderId(customerId, product.getProductId(), orderType);
     this.product = product;
