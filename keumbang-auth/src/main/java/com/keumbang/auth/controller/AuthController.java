@@ -5,6 +5,7 @@ import java.net.URI;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,5 +43,12 @@ public class AuthController {
   public ResponseEntity<GetTokenResponse> reissue(
       @RequestBody @Valid final ReissueRequest request) {
     return ResponseEntity.ok(jwtTokenService.reissueToken(request));
+  }
+
+  @DeleteMapping("/withdraw")
+  public ResponseEntity<Void> withdraw() {
+    Long memberId = 1L;
+    authService.withdraw(memberId);
+    return ResponseEntity.noContent().build();
   }
 }
