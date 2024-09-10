@@ -34,4 +34,3 @@ jwt:
     header: ${JWT_ACCESS_TOKEN_HEADER}
   refresh:
     expiration: ${JWT_REFRESH_TOKEN_EXPIRE_TIME}
-    header: ${JWT_REFRESH_TOKEN_HEADER}
