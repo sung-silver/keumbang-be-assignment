@@ -6,4 +6,8 @@ public interface ExceptionType {
   HttpStatus status();
 
   String message();
+
+  default int getHttpStatusCode() {
+    return status().value();
+  }
 }
