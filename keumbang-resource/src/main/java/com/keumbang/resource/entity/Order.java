@@ -12,6 +12,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.SQLDelete;
@@ -26,6 +27,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "orders")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE order SET is_deleted = true, deleted_at = now() WHERE order_id = ?")
 @SQLRestriction("is_deleted = false")
