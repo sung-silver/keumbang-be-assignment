@@ -4,16 +4,12 @@ import static com.keumbang.auth.exception.exceptionType.AuthExceptionType.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -116,11 +112,9 @@ public class JwtTokenService {
     return tokenClaims.get(MEMBER_ID_CLAIM).toString();
   }
 
-  public Collection<? extends GrantedAuthority> getAuthoritiesFromAccessToken(String accessToken) {
+  public List<String> extractRolesFromAccessToken(String accessToken) {
     Claims claims = jwtTokenProvider.getTokenClaims(accessToken);
-    List<String> roles = claims.get(ROLE_CLAIM, List.class);
-
-    return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    return claims.get(ROLE_CLAIM, List.class);
   }
 
   public String getAuthorizationAccessToken(HttpServletRequest request) {
