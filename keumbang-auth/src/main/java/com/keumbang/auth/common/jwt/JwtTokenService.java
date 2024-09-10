@@ -32,14 +32,8 @@ public class JwtTokenService {
   @Value("${jwt.header.format}")
   private String AUTHORIZATION_FORMAT;
 
-  @Value("${jwt.access.expiration}")
-  private Long accessTokenExpirationPeriod;
-
-  @Value("${jwt.refresh.expiration}")
-  private Long refreshTokenExpirationPeriod;
-
   @Value("${jwt.access.header}")
-  private String accessHeader;
+  private String ACCESS_TOKEN_HEADER;
 
   private final JwtTokenProvider jwtTokenProvider;
   private final MemberRepository memberRepository;
