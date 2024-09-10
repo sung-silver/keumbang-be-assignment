@@ -14,31 +14,36 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import com.keumbang.auth.common.response.ErrorResponse;
+
 import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
 @Slf4j
 public class CustomExceptionHandler {
   @ExceptionHandler(CustomException.class)
-  public ResponseEntity<String> handleCustomException(CustomException ex) {
-    return ResponseEntity.status(ex.getExceptionType().status()).body(ex.getMessage());
+  public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
+    return ResponseEntity.status(ex.getExceptionType().status())
+        .body(ErrorResponse.of(ex.getExceptionType()));
   }
 
   @ExceptionHandler(RuntimeException.class)
-  public ResponseEntity<String> handleServerException(RuntimeException ex) {
+  public ResponseEntity<ErrorResponse> handleServerException(RuntimeException ex) {
     log.error("🚨 InternalException occurred: {} 🚨", ex.getMessage(), ex);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body(INTERNAL_SERVER_ERROR.getMessage());
+        .body(ErrorResponse.of(INTERNAL_SERVER_ERROR));
   }
 
   @ExceptionHandler(NoHandlerFoundException.class)
-  public ResponseEntity<String> handleNotFoundException(NoHandlerFoundException ex) {
+  public ResponseEntity<ErrorResponse> handleNotFoundException(NoHandlerFoundException ex) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND)
-        .body(NOT_FOUND_PATH.getMessage() + ": " + ex.getRequestURL());
+        .body(
+            ErrorResponse.of(
+                NOT_FOUND_PATH, NOT_FOUND_PATH.getMessage() + ": " + ex.getRequestURL()));
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<String> handleValidationError(MethodArgumentNotValidException ex) {
+  public ResponseEntity<ErrorResponse> handleValidationError(MethodArgumentNotValidException ex) {
     BindingResult bindingResult = ex.getBindingResult();
     StringBuilder builder = new StringBuilder();
 
@@ -56,27 +61,36 @@ public class CustomExceptionHandler {
     }
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(INVALID_INPUT_VALUE.getMessage() + ": " + builder);
+        .body(
+            ErrorResponse.of(
+                INVALID_INPUT_VALUE, INVALID_INPUT_VALUE.getMessage() + ": " + builder));
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-  public ResponseEntity<String> handleMethodArgumentTypeMismatchException(
+  public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(
       MethodArgumentTypeMismatchException ex) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body(
-            INVALID_REQUEST_PARAM_TYPE.getMessage() + ": " + ex.getParameter().getParameterName());
+            ErrorResponse.of(
+                INVALID_REQUEST_PARAM_TYPE,
+                INVALID_REQUEST_PARAM_TYPE.getMessage()
+                    + ": "
+                    + ex.getParameter().getParameterName()));
   }
 
   @ExceptionHandler(MissingServletRequestParameterException.class)
-  public ResponseEntity<String> handleMissingServletRequestParameterException(
+  public ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(
       MissingServletRequestParameterException ex) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(NOT_NULL_REQUEST_PARAM.getMessage() + ": " + ex.getParameterName());
+        .body(
+            ErrorResponse.of(
+                NOT_NULL_REQUEST_PARAM,
+                NOT_NULL_REQUEST_PARAM.getMessage() + ": " + ex.getParameterName()));
   }
 
   @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-  public ResponseEntity<String> handleHttpMediaTypeNotSupportedException() {
+  public ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupportedException() {
     return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-        .body(INVALID_JSON_TYPE.getMessage());
+        .body(ErrorResponse.of(INVALID_JSON_TYPE, INVALID_JSON_TYPE.getMessage()));
   }
 }
