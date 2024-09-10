@@ -27,7 +27,7 @@ public class Product extends BaseTimeEntity {
   @NotNull
   private PurityType purityType;
 
-  private long price;
+  private long gramPerPrice;
 
   @NotNull private String productName;
 
