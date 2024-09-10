@@ -1,8 +1,8 @@
 package com.keumbang.resource.entity.enums;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum OrderType {
   BUY("구매"),
   SELL("판매");
