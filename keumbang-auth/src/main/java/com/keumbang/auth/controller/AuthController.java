@@ -1,5 +1,7 @@
 package com.keumbang.auth.controller;
 
+import static com.keumbang.auth.exception.exceptionType.AuthSuccessType.*;
+
 import java.net.URI;
 
 import jakarta.validation.Valid;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.keumbang.auth.common.jwt.JwtTokenService;
+import com.keumbang.auth.common.response.SuccessResponse;
 import com.keumbang.auth.controller.dto.request.LoginRequest;
 import com.keumbang.auth.controller.dto.request.ReissueRequest;
 import com.keumbang.auth.controller.dto.request.SignUpRequest;
@@ -32,21 +35,24 @@ public class AuthController {
   private final JwtTokenService jwtTokenService;
 
   @PostMapping("/sign-up")
-  public ResponseEntity<GetTokenResponse> signUp(@RequestBody @Valid final SignUpRequest request) {
+  public ResponseEntity<SuccessResponse<GetTokenResponse>> signUp(
+      @RequestBody @Valid final SignUpRequest request) {
     GetTokenResponse response = authService.signUp(request);
     URI uri = URI.create("/members/" + response.memberId());
-    return ResponseEntity.created(uri).body(response);
+    return ResponseEntity.created(uri).body(SuccessResponse.of(SUCCESS_SIGNUP, response));
   }
 
   @PostMapping("/login")
-  public ResponseEntity<GetTokenResponse> login(@RequestBody @Valid final LoginRequest request) {
-    return ResponseEntity.ok(authService.login(request));
+  public ResponseEntity<SuccessResponse<GetTokenResponse>> login(
+      @RequestBody @Valid final LoginRequest request) {
+    return ResponseEntity.ok(SuccessResponse.of(SUCCESS_LOGIN, authService.login(request)));
   }
 
   @PostMapping("/reissue")
-  public ResponseEntity<GetTokenResponse> reissue(
+  public ResponseEntity<SuccessResponse<GetTokenResponse>> reissue(
       @RequestBody @Valid final ReissueRequest request) {
-    return ResponseEntity.ok(jwtTokenService.reissueToken(request));
+    return ResponseEntity.ok(
+        SuccessResponse.of(SUCCESS_TOKEN_REFRESH, jwtTokenService.reissueToken(request)));
   }
 
   @DeleteMapping("/withdraw")
