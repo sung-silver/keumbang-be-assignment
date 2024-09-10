@@ -25,4 +25,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
   default Member findByEmailOrThrow(final String email) {
     return findByEmail(email).orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER));
   }
+
+  Optional<Member> findByMemberId(final Long memberId);
+
+  default Member findByMemberIdOrThrow(final Long memberId) {
+    return findByMemberId(memberId).orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER));
+  }
 }
