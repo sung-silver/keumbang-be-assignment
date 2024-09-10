@@ -22,6 +22,10 @@ public interface OrderApi {
       value = {
         @ApiResponse(responseCode = "201", description = "주문에 성공했을 경우"),
         @ApiResponse(
+            responseCode = "400",
+            description = "판매 상품에 대해 판매 주문을 하는 경우 또는 매입 상품에 대해 구매 주문을 하는 경우",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+        @ApiResponse(
             responseCode = "404",
             description = "존재하지 않은 상품에 대해 주문을 요청하는 경우",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
