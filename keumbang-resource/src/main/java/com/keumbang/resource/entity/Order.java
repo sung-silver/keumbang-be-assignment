@@ -2,6 +2,7 @@ package com.keumbang.resource.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,6 +21,7 @@ import com.keumbang.resource.entity.enums.OrderStatus;
 import com.keumbang.resource.entity.enums.OrderType;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -55,4 +57,34 @@ public class Order extends BaseTimeEntity {
   private boolean isDeleted;
 
   private LocalDateTime deletedAt;
+
+  @Builder
+  private Order(
+      Product product,
+      Long customerId,
+      OrderType orderType,
+      BigDecimal orderQuantity,
+      long orderPrice,
+      OrderStatus orderStatus,
+      String deliveryAddressInfo) {
+    this.orderId = createOrderId(customerId, product.getProductId(), orderType);
+    this.product = product;
+    this.customerId = customerId;
+    this.orderType = orderType;
+    this.orderQuantity = orderQuantity;
+    this.orderPrice = orderPrice;
+    this.orderStatus = orderStatus;
+    this.deliveryAddressInfo = deliveryAddressInfo;
+  }
+
+  private String createOrderId(Long customerId, Long productId, OrderType orderType) {
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+    String dateTime = LocalDateTime.now().format(dateFormatter);
+
+    String formattedProductId = String.format("%08d", productId);
+    String formattedCustomerId = String.format("%08d", customerId);
+
+    return String.format(
+        "ORD-%s-%s-%s-%s", dateTime, orderType, formattedProductId, formattedCustomerId);
+  }
 }
