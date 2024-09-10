@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,10 +32,10 @@ public class JwtTokenService {
   private static final String MEMBER_ID_CLAIM = "memberId";
 
   @Value("${jwt.header.format}")
-  private String AUTHORIZATION_FORMAT;
+  public static String AUTHORIZATION_FORMAT;
 
   @Value("${jwt.access.header}")
-  private String ACCESS_TOKEN_HEADER;
+  public static String ACCESS_TOKEN_HEADER;
 
   private final JwtTokenProvider jwtTokenProvider;
   private final MemberRepository memberRepository;
@@ -48,6 +50,7 @@ public class JwtTokenService {
     return GetTokenResponse.of(memberId, accessToken, refreshToken);
   }
 
+  @Transactional
   public GetTokenResponse reissueToken(final ReissueRequest request) {
     try {
       String refreshToken = extractToken(request.refreshToken());
@@ -55,7 +58,7 @@ public class JwtTokenService {
       Long memberId = Long.valueOf(extractedMemberId);
       Member member = memberRepository.findByMemberIdOrThrow(memberId);
 
-      validateToken(refreshToken, member.getRefreshToken());
+      validateRefreshToken(refreshToken, member.getRefreshToken());
 
       List<String> roles = new ArrayList<>(Arrays.asList(member.getRole().getRole()));
       String newAccessToken = jwtTokenProvider.createAccessToken(memberId, roles);
@@ -79,7 +82,7 @@ public class JwtTokenService {
     memberRepository.updateRefreshToken(memberId, refreshToken);
   }
 
-  public boolean validateToken(final String token, final String savedToken) {
+  public boolean validateRefreshToken(final String token, final String savedToken) {
     Claims tokenClaims = jwtTokenProvider.getTokenClaims(token);
     boolean isValidRefreshToken = token.equals(savedToken);
     if (!isValidRefreshToken) {
@@ -91,5 +94,9 @@ public class JwtTokenService {
   public String extractMemberIdFromRefreshToken(final String rtk) {
     Claims tokenClaims = jwtTokenProvider.getTokenClaims(rtk);
     return tokenClaims.get(MEMBER_ID_CLAIM).toString();
+  }
+
+  public String getAuthorizationAccessToken(HttpServletRequest request) {
+    return request.getHeader(ACCESS_TOKEN_HEADER).substring(7);
   }
 }
