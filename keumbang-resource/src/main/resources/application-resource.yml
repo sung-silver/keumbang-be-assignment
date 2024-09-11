@@ -19,3 +19,18 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MariaDBDialect
+
+grpc:
+  server:
+    port: ${RESOURCE_GRPC_PORT}
+
+auth:
+  server:
+    url: ${AUTH_GRPC_SERVER_URL}
+    port: ${AUTH_GRPC_SERVER_PORT}
+
+jwt:
+  access:
+    header: ${JWT_ACCESS_TOKEN_HEADER}
+  header:
+    format: ${JWT_HEADER_FORMAT}
