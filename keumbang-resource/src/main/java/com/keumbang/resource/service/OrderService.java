@@ -95,7 +95,7 @@ public class OrderService {
 
   private void validateBuyOrderStatus(
       final OrderStatus currentOrderStatus, final OrderStatus requestOrderStatus) {
-    if (isInvalidOrderStatus(requestOrderStatus, sellOrderStatusMap)) {
+    if (isInvalidOrderStatus(requestOrderStatus, buyOrderStatusMap)) {
       throw new CustomException(INVALID_UPDATE_ORDER);
     }
 
@@ -107,7 +107,7 @@ public class OrderService {
         }
         break;
       default:
-        if (isInvalidOrdering(currentOrderStatus, requestOrderStatus, sellOrderStatusMap)) {
+        if (isInvalidOrdering(currentOrderStatus, requestOrderStatus, buyOrderStatusMap)) {
           throw new CustomException(INVALID_UPDATE_ORDER);
         }
     }
