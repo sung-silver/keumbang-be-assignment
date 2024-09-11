@@ -3,7 +3,7 @@ package com.keumbang.resource.service;
 import static com.keumbang.resource.exception.exceptionType.OrderExceptionType.*;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +29,20 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final ProductRepository productRepository;
   private static final int NEXT_ORDER = 1;
+
+  private static ConcurrentHashMap<OrderStatus, Integer> buyOrderStatusMap =
+      new ConcurrentHashMap<>();
+  private static ConcurrentHashMap<OrderStatus, Integer> sellOrderStatusMap =
+      new ConcurrentHashMap<>();
+
+  static {
+    buyOrderStatusMap.put(OrderStatus.ORDERED, 1);
+    buyOrderStatusMap.put(OrderStatus.TRANSFERRED, 2);
+    buyOrderStatusMap.put(OrderStatus.RECEIVED, 3);
+    sellOrderStatusMap.put(OrderStatus.ORDERED, 1);
+    sellOrderStatusMap.put(OrderStatus.DEPOSITED, 2);
+    sellOrderStatusMap.put(OrderStatus.DELIVERED, 3);
+  }
 
   @Transactional
   public String createOrder(final CreateOrderRequest request) {
@@ -78,13 +92,16 @@ public class OrderService {
 
   private void validateBuyOrderStatus(
       final OrderStatus currentOrderStatus, final OrderStatus requestOrderStatus) {
-    HashMap<OrderStatus, Integer> orderedStatusMap = OrderStatus.getBuyOrderStatusMap();
-    boolean isInvalidOrdering =
-        orderedStatusMap.get(currentOrderStatus) + NEXT_ORDER
-            != orderedStatusMap.get(requestOrderStatus);
+    boolean isInvalidBuyOrderStatus = buyOrderStatusMap.get(requestOrderStatus) == null;
+    if (isInvalidBuyOrderStatus) {
+      throw new CustomException(INVALID_UPDATE_ORDER);
+    }
     boolean isInvalidCancelOrder =
         currentOrderStatus.equals(OrderStatus.RECEIVED)
             && requestOrderStatus.equals(OrderStatus.CANCELED);
+    boolean isInvalidOrdering =
+        buyOrderStatusMap.get(currentOrderStatus) + NEXT_ORDER
+            != buyOrderStatusMap.get(requestOrderStatus);
     if (isInvalidCancelOrder || isInvalidOrdering) {
       throw new CustomException(INVALID_UPDATE_ORDER);
     }
@@ -104,13 +121,16 @@ public class OrderService {
 
   private void validateSellOrderStatus(
       final OrderStatus currentOrderStatus, final OrderStatus requestOrderStatus) {
-    HashMap<OrderStatus, Integer> orderedStatusMap = OrderStatus.getSellOrderStatusMap();
-    boolean isInvalidOrdering =
-        orderedStatusMap.get(currentOrderStatus) + NEXT_ORDER
-            != orderedStatusMap.get(requestOrderStatus);
+    boolean isInvalidSellOrderStatus = sellOrderStatusMap.get(requestOrderStatus) == null;
+    if (isInvalidSellOrderStatus) {
+      throw new CustomException(INVALID_UPDATE_ORDER);
+    }
     boolean isInvalidCancelOrder =
         currentOrderStatus.equals(OrderStatus.DELIVERED)
             && requestOrderStatus.equals(OrderStatus.CANCELED);
+    boolean isInvalidOrdering =
+        sellOrderStatusMap.get(currentOrderStatus) + NEXT_ORDER
+            != sellOrderStatusMap.get(requestOrderStatus);
     if (isInvalidCancelOrder || isInvalidOrdering) {
       throw new CustomException(INVALID_UPDATE_ORDER);
     }
