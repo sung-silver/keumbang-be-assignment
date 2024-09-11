@@ -169,4 +169,21 @@ public class OrderService {
     return orderStatusMap.get(currentOrderStatus) + NEXT_ORDER
         != orderStatusMap.get(requestOrderStatus);
   }
+
+  public void deleteOrder(final String orderId) {
+    // TODO: memberId 가져오는 로직 필요
+    Long memberId = 1L;
+    Order order = orderRepository.findByOrderIdAndCustomerIdOrThrow(orderId, memberId);
+    validateDeleteOrder(order);
+    orderRepository.delete(order);
+  }
+
+  private void validateDeleteOrder(final Order order) {
+    boolean isInvalidDeleteOrder =
+        order.getOrderStatus().equals(OrderStatus.RECEIVED)
+            || order.getOrderStatus().equals(OrderStatus.DELIVERED);
+    if (isInvalidDeleteOrder) {
+      throw new CustomException(INVALID_DELETE_ORDER);
+    }
+  }
 }
