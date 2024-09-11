@@ -21,6 +21,7 @@ import com.keumbang.resource.controller.dto.request.UpdateOrderStatusRequest;
 import com.keumbang.resource.controller.dto.response.UpdateOrderStatusResponse;
 import com.keumbang.resource.exception.exceptionType.OrderSuccessType;
 import com.keumbang.resource.service.OrderService;
+import com.keumbang.resource.service.UpdateOrderService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderController implements OrderApi {
   private static final String ORDER_URL = "/orders/";
   private final OrderService orderService;
+  private final UpdateOrderService updateOrderService;
 
   @Override
   @PostMapping
@@ -46,7 +48,7 @@ public class OrderController implements OrderApi {
   public ResponseEntity<SuccessResponse<UpdateOrderStatusResponse>> updateBuyOrder(
       @PathVariable("orderId") final String orderId,
       @RequestBody @Valid final UpdateOrderStatusRequest request) {
-    UpdateOrderStatusResponse response = orderService.updateBuyOrderStatus(orderId, request);
+    UpdateOrderStatusResponse response = updateOrderService.updateBuyOrderStatus(orderId, request);
     return ResponseEntity.ok(SuccessResponse.of(UPDATE_ORDER_STATUS_SUCCESS, response));
   }
 
@@ -55,7 +57,7 @@ public class OrderController implements OrderApi {
   public ResponseEntity<SuccessResponse<UpdateOrderStatusResponse>> updateSellOrder(
       @PathVariable("orderId") final String orderId,
       @RequestBody @Valid final UpdateOrderStatusRequest request) {
-    UpdateOrderStatusResponse response = orderService.updateSellOrderStatus(orderId, request);
+    UpdateOrderStatusResponse response = updateOrderService.updateSellOrderStatus(orderId, request);
     return ResponseEntity.ok(SuccessResponse.of(UPDATE_ORDER_STATUS_SUCCESS, response));
   }
 
