@@ -7,6 +7,7 @@ import java.net.URI;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,5 +57,13 @@ public class OrderController implements OrderApi {
       @RequestBody @Valid final UpdateOrderStatusRequest request) {
     UpdateOrderStatusResponse response = orderService.updateSellOrderStatus(orderId, request);
     return ResponseEntity.ok(SuccessResponse.of(UPDATE_ORDER_STATUS_SUCCESS, response));
+  }
+
+  @Override
+  @DeleteMapping("/{orderId}")
+  public ResponseEntity<SuccessResponse<Void>> deleteOrder(
+      @PathVariable("orderId") final String orderId) {
+    orderService.deleteOrder(orderId);
+    return ResponseEntity.noContent().build();
   }
 }
