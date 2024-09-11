@@ -18,15 +18,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.keumbang.resource.common.security.filter.JwtAuthenticationFilter;
 import com.keumbang.resource.common.security.filter.JwtExceptionFilter;
 
-import lombok.RequiredArgsConstructor;
-
 @Configuration
-@RequiredArgsConstructor
 public class SecurityConfig {
-  @Value("${jwt.header.format}")
   public static String AUTHORIZATION_FORMAT;
-
-  @Value("${jwt.access.header}")
   public static String ACCESS_TOKEN_HEADER;
 
   public static final String[] PERMIT_PATH = {
@@ -48,6 +42,17 @@ public class SecurityConfig {
 
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final JwtExceptionFilter jwtExceptionFilter;
+
+  public SecurityConfig(
+      @Value("${jwt.header.format}") String authorizationFormat,
+      @Value("${jwt.access.header}") String accessTokenHeader,
+      JwtAuthenticationFilter jwtAuthenticationFilter,
+      JwtExceptionFilter jwtExceptionFilter) {
+    this.AUTHORIZATION_FORMAT = authorizationFormat;
+    this.ACCESS_TOKEN_HEADER = accessTokenHeader;
+    this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    this.jwtExceptionFilter = jwtExceptionFilter;
+  }
 
   @Bean
   public WebMvcConfigurer corsConfigurer() {
