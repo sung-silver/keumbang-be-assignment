@@ -6,6 +6,7 @@ import com.keumbang.resource.entity.enums.OrderStatus;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(name = "UpdateOrderStatusRequest", description = "주문 상태 변경 요청 DTO")
 public record UpdateOrderStatusRequest(
     @NotNull(message = "주문 변경 상태는 필수 입력 값입니다.")
         @Schema(

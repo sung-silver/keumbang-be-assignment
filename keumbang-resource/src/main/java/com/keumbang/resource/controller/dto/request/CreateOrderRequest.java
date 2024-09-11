@@ -9,7 +9,7 @@ import com.keumbang.resource.entity.enums.OrderType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "MemberRequestDTO", description = "소셜 로그인 요청 DTO")
+@Schema(name = "CreateOrderRequest", description = "주문 생성 요청 DTO")
 public record CreateOrderRequest(
     @NotNull(message = "상품 ID는 필수 입력 값입니다.") @Schema(description = "상품 ID", example = "1")
         Long productId,
