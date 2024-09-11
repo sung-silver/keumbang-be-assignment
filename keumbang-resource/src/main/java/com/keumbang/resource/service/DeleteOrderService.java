@@ -20,10 +20,14 @@ public class DeleteOrderService {
 
   @Transactional
   public void deleteOrder(final String orderId) {
-    long memberId = memberService.getMemberId();
-    Order order = orderRepository.findByOrderIdAndCustomerIdOrThrow(orderId, memberId);
-    validateDeleteOrder(order);
-    orderRepository.delete(order);
+    try {
+      long memberId = memberService.getMemberId();
+      Order order = orderRepository.findByOrderIdAndCustomerIdOrThrow(orderId, memberId);
+      validateDeleteOrder(order);
+      orderRepository.delete(order);
+    } catch (CustomException e) {
+      throw new CustomException(INVALID_DELETE_ORDER);
+    }
   }
 
   private void validateDeleteOrder(final Order order) {
