@@ -20,6 +20,7 @@ import com.keumbang.resource.controller.dto.request.CreateOrderRequest;
 import com.keumbang.resource.controller.dto.request.UpdateOrderStatusRequest;
 import com.keumbang.resource.controller.dto.response.UpdateOrderStatusResponse;
 import com.keumbang.resource.exception.exceptionType.OrderSuccessType;
+import com.keumbang.resource.service.DeleteOrderService;
 import com.keumbang.resource.service.OrderService;
 import com.keumbang.resource.service.UpdateOrderService;
 
@@ -32,6 +33,7 @@ public class OrderController implements OrderApi {
   private static final String ORDER_URL = "/orders/";
   private final OrderService orderService;
   private final UpdateOrderService updateOrderService;
+  private final DeleteOrderService deleteOrderService;
 
   @Override
   @PostMapping
@@ -65,7 +67,7 @@ public class OrderController implements OrderApi {
   @DeleteMapping("/{orderId}")
   public ResponseEntity<SuccessResponse<Void>> deleteOrder(
       @PathVariable("orderId") final String orderId) {
-    orderService.deleteOrder(orderId);
+    deleteOrderService.deleteOrder(orderId);
     return ResponseEntity.noContent().build();
   }
 }
