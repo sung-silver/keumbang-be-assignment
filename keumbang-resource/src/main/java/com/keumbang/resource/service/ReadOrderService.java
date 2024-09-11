@@ -1,5 +1,7 @@
 package com.keumbang.resource.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,5 +22,10 @@ public class ReadOrderService {
     Long memberId = memberService.getMemberId();
     Order order = orderRepository.findByOrderIdAndCustomerId(orderId, memberId);
     return ReadOrderResponse.of(order, order.getProduct());
+  }
+
+  public Page<Order> getOrders(int page, int size) {
+    PageRequest pageable = PageRequest.of(page, size);
+    return orderRepository.findAll(pageable);
   }
 }
