@@ -25,6 +25,7 @@ public class CustomExceptionHandler {
 
   @ExceptionHandler(CustomException.class)
   public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
+    log.error("🚨 CustomException occurred: {} 🚨", ex.getMessage(), ex);
     return ResponseEntity.status(ex.getExceptionType().status())
         .body(ErrorResponse.of(ex.getExceptionType()));
   }
