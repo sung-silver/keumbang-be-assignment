@@ -79,11 +79,11 @@ public class Order extends BaseTimeEntity {
   }
 
   private String createOrderId(Long customerId, Long productId, OrderType orderType) {
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     String dateTime = LocalDateTime.now().format(dateFormatter);
 
-    String formattedProductId = String.format("%08d", productId);
-    String formattedCustomerId = String.format("%08d", customerId);
+    String formattedProductId = String.format("%04d", productId);
+    String formattedCustomerId = String.format("%04d", customerId);
 
     return String.format(
         "ORD-%s-%s-%s-%s", dateTime, orderType, formattedProductId, formattedCustomerId);
