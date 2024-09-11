@@ -48,17 +48,16 @@ $ cd keumbang-be-assignment
 
 ### 2. application.properties 파일 및 data.sql 추가
 
-google drive에 첨부된 auth-application.properties, resource-application.properties, auth-data.sql, resource-data.sql의 내용을 복사하여 다음 경로에 파일을 생성합니다<br>
-MariaDB가 각각 존재할 경우 application.properties를 생성하는 시점에서 DB_URL을 맞추어 변경해줍니다<br>
-그렇지 않은 경우 MariaDB를 실행하여 keumbang-auth, keumbang-resource 스키마를 각각 생성하여 사용합니다<br>
+- google drive에 첨부된 auth-application.properties, resource-application.properties의 내용을 복사하여 다음 경로에 파일을 생성합니다
+- MariaDB가 각각 존재할 경우 application.properties를 생성하는 시점에서 DB_URL을 맞추어 변경해줍니다
+- 그렇지 않은 경우 MariaDB를 실행하여 keumbang-auth, keumbang-resource 스키마를 각각 생성하여 사용합니다
+- **4-1, 4-2 과정을 거쳐 서버를 실행한 후에 auth-data.sql, resource-data.sql을 각 데이터베이스 스키마에서 실행하여 더미데이터를 삽입합니다**
 
 ```bash
 # auth 서버 설정 파일 생성
 $ cd keumbang-auth/src/main/resources/
 # vim 편집기에서 auth-application.properties의 내용을 복사 붙여넣기 한 후 저장합니다 (:wq)
 $ vim application.properties
-# vim 편집기에서 auth-data.sql의 내용을 복사 붙여넣기 한 후 저장합니다 (:wq)
-$ vim data.sql
 
 ## 프로젝트 루트로 이동합니다
 $ cd ../../../../
@@ -67,8 +66,6 @@ $ cd ../../../../
 $ cd keumbang-resource/src/main/resources/
 # vim 편집기에서 resource-application.properties의 내용을 복사 붙여넣기 한 후 저장합니다 (:wq)
 $ vim application.properties
-# vim 편집기에서 resource-data.sql의 내용을 복사 붙여넣기 한 후 저장합니다 (:wq)
-$ vim data.sql
 
 ## 프로젝트 루트로 이동합니다
 $ cd ../../../../
