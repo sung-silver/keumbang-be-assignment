@@ -3,11 +3,14 @@ package com.keumbang.resource.controller;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.keumbang.resource.common.response.ErrorResponse;
 import com.keumbang.resource.common.response.SuccessResponse;
 import com.keumbang.resource.controller.dto.request.CreateOrderRequest;
+import com.keumbang.resource.controller.dto.request.UpdateOrderStatusRequest;
+import com.keumbang.resource.controller.dto.response.UpdateOrderStatusResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,4 +36,36 @@ public interface OrderApi {
   @Operation(summary = "주문 생성 API", description = "사용자가 상품을 주문합니다")
   ResponseEntity<SuccessResponse<Void>> createOrder(
       @RequestBody @Valid final CreateOrderRequest request);
+
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "구매 주문 상태 변경에 성공했을 경우"),
+        @ApiResponse(
+            responseCode = "400",
+            description =
+                "구매 주문에 대해 상태를 변경할 수 없는 경우(1. 구매 주문 상태 순서: 주문 완료 -> 송금 완료 -> 수령 완료, 각 순서가 이미 진행되었을 때에는 이전 순서로 돌아갈 수 없다"
+                    + "2. 사용자가 구매 주문한 내역이 아닌 경우"
+                    + "3. 수령 완료 후에 구매 주문을 취소하는 경우",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+      })
+  @Operation(summary = "구매 주문 상태 변경 API", description = "사용자가 상품을 주문합니다")
+  ResponseEntity<SuccessResponse<UpdateOrderStatusResponse>> updateBuyOrder(
+      @PathVariable("orderId") final String orderId,
+      @RequestBody @Valid final UpdateOrderStatusRequest request);
+
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "판매 주문 상태 변경에 성공했을 경우"),
+        @ApiResponse(
+            responseCode = "400",
+            description =
+                "판매 주문에 대해 상태를 변경할 수 없는 경우(1. 판매 주문 상태 순서: 주문 완료 -> 입금 완료 -> 발송 완료, 각 순서가 이미 진행되었을 때에는 이전 순서로 돌아갈 수 없다"
+                    + "2. 사용자가 판매 주문한 내역이 아닌 경우"
+                    + "3. 발송 완료 후에 판매 주문을 취소하는 경우",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+      })
+  @Operation(summary = "판매 주문 상태 변경 API", description = "사용자가 상품을 주문합니다")
+  ResponseEntity<SuccessResponse<UpdateOrderStatusResponse>> updateSellOrder(
+      @PathVariable("orderId") final String orderId,
+      @RequestBody @Valid final UpdateOrderStatusRequest request);
 }
