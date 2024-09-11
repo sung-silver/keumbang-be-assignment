@@ -9,7 +9,10 @@ public enum OrderExceptionType implements ExceptionType {
   // 400
   INVALID_ORDER_TYPE(HttpStatus.BAD_REQUEST, "주문 타입이 올바르지 않습니다"),
   INVALID_UPDATE_ORDER(HttpStatus.BAD_REQUEST, "올바르지 않은 주문 상태 변경 요청입니다"),
-  INVALID_DELETE_ORDER(HttpStatus.BAD_REQUEST, "올바르지 않은 주문 삭제 요청입니다");
+  INVALID_DELETE_ORDER(HttpStatus.BAD_REQUEST, "올바르지 않은 주문 삭제 요청입니다"),
+
+  // 404
+  NOT_FOUND_ORDER(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다");
   ;
   private final HttpStatus status;
   private final String message;
