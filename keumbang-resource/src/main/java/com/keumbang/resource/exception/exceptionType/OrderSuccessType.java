@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum OrderSuccessType implements SuccessType {
   CREATE_ORDER_SUCCESS(HttpStatus.CREATED, "주문 생성에 성공하였습니다."),
   UPDATE_ORDER_STATUS_SUCCESS(HttpStatus.OK, "주문 상태 변경에 성공하였습니다."),
-  READ_ORDER_SUCCESS(HttpStatus.OK, "주문 상세 조회에 성공하였습니다.");
+  READ_ORDER_SUCCESS(HttpStatus.OK, "주문 상세 조회에 성공하였습니다."),
+  READ_ORDERS_SUCCESS(HttpStatus.OK, "주문 목록 조회에 성공하였습니다.");
 
   private final HttpStatus status;
   private final String message;
