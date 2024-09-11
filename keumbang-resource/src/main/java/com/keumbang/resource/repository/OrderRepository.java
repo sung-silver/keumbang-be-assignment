@@ -25,6 +25,6 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 
   default Order findByOrderIdAndCustomerIdOrThrow(final String orderId, final Long memberId) {
     return Optional.ofNullable(findByOrderIdAndCustomerId(orderId, memberId))
-        .orElseThrow(() -> new CustomException(INVALID_DELETE_ORDER));
+        .orElseThrow(() -> new CustomException(NOT_FOUND_ORDER));
   }
 }
