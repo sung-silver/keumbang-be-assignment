@@ -10,6 +10,7 @@ import com.keumbang.resource.common.response.ErrorResponse;
 import com.keumbang.resource.common.response.SuccessResponse;
 import com.keumbang.resource.controller.dto.request.CreateOrderRequest;
 import com.keumbang.resource.controller.dto.request.UpdateOrderStatusRequest;
+import com.keumbang.resource.controller.dto.response.ReadOrderResponse;
 import com.keumbang.resource.controller.dto.response.UpdateOrderStatusResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -77,6 +78,18 @@ public interface OrderApi {
             description = "주문 취소 상태가 아닌 경우에 주문 삭제 요청하는 경우, 사용자가 주문한 내역을 찾을 수 없는 경우",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
       })
-  @Operation(summary = "판매 주문 상태 변경 API", description = "사용자가 상품을 주문을 취소합니다")
+  @Operation(summary = "주문 삭제 API", description = "사용자가 상품을 주문을 삭제합니다")
   ResponseEntity<SuccessResponse<Void>> deleteOrder(@PathVariable("orderId") final String orderId);
+
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "주문 상세 정보 조회에 성공했을 경우"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "사용자가 주문한 내역을 찾을 수 없는 경우",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+      })
+  @Operation(summary = "주문 상세 조회 API", description = "사용자가 주문 상세 정보 조회를 요청합니다")
+  ResponseEntity<SuccessResponse<ReadOrderResponse>> getOrder(
+      @PathVariable("orderId") final String orderId);
 }
