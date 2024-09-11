@@ -36,9 +36,12 @@ public class OrderService {
       new ConcurrentHashMap<>();
 
   static {
+    buyOrderStatusMap.put(OrderStatus.CANCELED, 0);
     buyOrderStatusMap.put(OrderStatus.ORDERED, 1);
     buyOrderStatusMap.put(OrderStatus.TRANSFERRED, 2);
     buyOrderStatusMap.put(OrderStatus.RECEIVED, 3);
+
+    sellOrderStatusMap.put(OrderStatus.CANCELED, 0);
     sellOrderStatusMap.put(OrderStatus.ORDERED, 1);
     sellOrderStatusMap.put(OrderStatus.DEPOSITED, 2);
     sellOrderStatusMap.put(OrderStatus.DELIVERED, 3);
@@ -92,18 +95,21 @@ public class OrderService {
 
   private void validateBuyOrderStatus(
       final OrderStatus currentOrderStatus, final OrderStatus requestOrderStatus) {
-    boolean isInvalidBuyOrderStatus = buyOrderStatusMap.get(requestOrderStatus) == null;
-    if (isInvalidBuyOrderStatus) {
+    if (isInvalidOrderStatus(requestOrderStatus, sellOrderStatusMap)) {
       throw new CustomException(INVALID_UPDATE_ORDER);
     }
-    boolean isInvalidCancelOrder =
-        currentOrderStatus.equals(OrderStatus.RECEIVED)
-            && requestOrderStatus.equals(OrderStatus.CANCELED);
-    boolean isInvalidOrdering =
-        buyOrderStatusMap.get(currentOrderStatus) + NEXT_ORDER
-            != buyOrderStatusMap.get(requestOrderStatus);
-    if (isInvalidCancelOrder || isInvalidOrdering) {
-      throw new CustomException(INVALID_UPDATE_ORDER);
+
+    switch (requestOrderStatus) {
+      case CANCELED:
+        if (isAlreadyCanceled(currentOrderStatus)
+            || isInvalidCancelOrder(currentOrderStatus, requestOrderStatus)) {
+          throw new CustomException(INVALID_UPDATE_ORDER);
+        }
+        break;
+      default:
+        if (isInvalidOrdering(currentOrderStatus, requestOrderStatus, sellOrderStatusMap)) {
+          throw new CustomException(INVALID_UPDATE_ORDER);
+        }
     }
   }
 
@@ -121,18 +127,46 @@ public class OrderService {
 
   private void validateSellOrderStatus(
       final OrderStatus currentOrderStatus, final OrderStatus requestOrderStatus) {
-    boolean isInvalidSellOrderStatus = sellOrderStatusMap.get(requestOrderStatus) == null;
-    if (isInvalidSellOrderStatus) {
+    if (isInvalidOrderStatus(requestOrderStatus, sellOrderStatusMap)) {
       throw new CustomException(INVALID_UPDATE_ORDER);
     }
-    boolean isInvalidCancelOrder =
-        currentOrderStatus.equals(OrderStatus.DELIVERED)
-            && requestOrderStatus.equals(OrderStatus.CANCELED);
-    boolean isInvalidOrdering =
-        sellOrderStatusMap.get(currentOrderStatus) + NEXT_ORDER
-            != sellOrderStatusMap.get(requestOrderStatus);
-    if (isInvalidCancelOrder || isInvalidOrdering) {
-      throw new CustomException(INVALID_UPDATE_ORDER);
+
+    switch (requestOrderStatus) {
+      case CANCELED:
+        if (isAlreadyCanceled(currentOrderStatus)
+            || isInvalidCancelOrder(currentOrderStatus, requestOrderStatus)) {
+          throw new CustomException(INVALID_UPDATE_ORDER);
+        }
+        break;
+      default:
+        if (isInvalidOrdering(currentOrderStatus, requestOrderStatus, sellOrderStatusMap)) {
+          throw new CustomException(INVALID_UPDATE_ORDER);
+        }
     }
+  }
+
+  private boolean isInvalidOrderStatus(
+      final OrderStatus requestOrderStatus,
+      final ConcurrentHashMap<OrderStatus, Integer> orderStatusMap) {
+    return orderStatusMap.get(requestOrderStatus) == null;
+  }
+
+  private boolean isAlreadyCanceled(final OrderStatus currentOrderStatus) {
+    return currentOrderStatus.equals(OrderStatus.CANCELED);
+  }
+
+  private boolean isInvalidCancelOrder(
+      final OrderStatus currentOrderStatus, final OrderStatus requestOrderStatus) {
+    return (currentOrderStatus.equals(OrderStatus.DELIVERED)
+            || currentOrderStatus.equals(OrderStatus.RECEIVED))
+        && requestOrderStatus.equals(OrderStatus.CANCELED);
+  }
+
+  private boolean isInvalidOrdering(
+      final OrderStatus currentOrderStatus,
+      final OrderStatus requestOrderStatus,
+      final ConcurrentHashMap<OrderStatus, Integer> orderStatusMap) {
+    return orderStatusMap.get(currentOrderStatus) + NEXT_ORDER
+        != orderStatusMap.get(requestOrderStatus);
   }
 }
