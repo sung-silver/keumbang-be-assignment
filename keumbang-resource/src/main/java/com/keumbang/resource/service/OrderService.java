@@ -89,4 +89,30 @@ public class OrderService {
       throw new CustomException(INVALID_UPDATE_ORDER);
     }
   }
+
+  public UpdateOrderStatusResponse updateSellOrderStatus(
+      final String orderId, final UpdateOrderStatusRequest request) {
+    // TODO:: 로그인한 사용자의 ID를 가져오는 로직 구현
+    Long memberId = 1L;
+    Order order =
+        orderRepository.findByOrderIdAndCustomerIdAndOrderTypeOrThrow(
+            orderId, memberId, OrderType.SELL);
+    validateSellOrderStatus(order.getOrderStatus(), request.orderStatus());
+    order.updateOrderStatus(request.orderStatus());
+    return UpdateOrderStatusResponse.of(order.getOrderId(), order.getOrderStatus());
+  }
+
+  private void validateSellOrderStatus(
+      final OrderStatus currentOrderStatus, final OrderStatus requestOrderStatus) {
+    HashMap<OrderStatus, Integer> orderedStatusMap = OrderStatus.getSellOrderStatusMap();
+    boolean isInvalidOrdering =
+        orderedStatusMap.get(currentOrderStatus) + NEXT_ORDER
+            != orderedStatusMap.get(requestOrderStatus);
+    boolean isInvalidCancelOrder =
+        currentOrderStatus.equals(OrderStatus.DELIVERED)
+            && requestOrderStatus.equals(OrderStatus.CANCELED);
+    if (isInvalidCancelOrder || isInvalidOrdering) {
+      throw new CustomException(INVALID_UPDATE_ORDER);
+    }
+  }
 }
