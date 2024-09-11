@@ -25,27 +25,22 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class JwtTokenService {
   private static final String MEMBER_ID_CLAIM = "memberId";
   private static final String ROLE_CLAIM = "roles";
+
+  @Value("${jwt.header.format}")
   public static String AUTHORIZATION_FORMAT;
+
+  @Value("${jwt.access.header}")
   public static String ACCESS_TOKEN_HEADER;
 
   private final JwtTokenProvider jwtTokenProvider;
   private final MemberRepository memberRepository;
-
-  public JwtTokenService(
-      @Value("${jwt.header.format}") String authorizationFormat,
-      @Value("${jwt.access.header}") String accessTokenHeader,
-      JwtTokenProvider jwtTokenProvider,
-      MemberRepository memberRepository) {
-    this.AUTHORIZATION_FORMAT = authorizationFormat;
-    this.ACCESS_TOKEN_HEADER = accessTokenHeader;
-    this.jwtTokenProvider = jwtTokenProvider;
-    this.memberRepository = memberRepository;
-  }
 
   @Transactional
   public GetTokenResponse issueToken(final MemberAuthVO memberAuthVO) {
