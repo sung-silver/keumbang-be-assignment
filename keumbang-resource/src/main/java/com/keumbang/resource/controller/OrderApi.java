@@ -68,4 +68,15 @@ public interface OrderApi {
   ResponseEntity<SuccessResponse<UpdateOrderStatusResponse>> updateSellOrder(
       @PathVariable("orderId") final String orderId,
       @RequestBody @Valid final UpdateOrderStatusRequest request);
+
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204", description = "판매 주문 상태 변경에 성공했을 경우"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "주문 취소 상태가 아닌 경우에 주문 삭제 요청하는 경우, 사용자가 주문한 내역을 찾을 수 없는 경우",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+      })
+  @Operation(summary = "판매 주문 상태 변경 API", description = "사용자가 상품을 주문을 취소합니다")
+  ResponseEntity<SuccessResponse<Void>> deleteOrder(@PathVariable("orderId") final String orderId);
 }
