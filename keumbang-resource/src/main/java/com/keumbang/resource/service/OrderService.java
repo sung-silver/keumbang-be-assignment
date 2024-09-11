@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderService {
   private final OrderRepository orderRepository;
   private final ProductRepository productRepository;
+  private final MemberService memberService;
   private static final int NEXT_ORDER = 1;
 
   private static final ConcurrentHashMap<OrderStatus, Integer> buyOrderStatusMap =
@@ -49,8 +50,7 @@ public class OrderService {
 
   @Transactional
   public String createOrder(final CreateOrderRequest request) {
-    // TODO: 로그인한 사용자의 ID를 가져오는 로직 구현
-    Long memberId = 1L;
+    long memberId = memberService.getMemberId();
     Product product = productRepository.findByProductIdThrow(request.productId());
     validateOrderType(product.getProductType(), request.orderType());
     BigDecimal orderPrice = getOrderPrice(product.getGramPerPrice(), request.orderQuantity());
@@ -83,8 +83,7 @@ public class OrderService {
 
   public UpdateOrderStatusResponse updateBuyOrderStatus(
       final String orderId, final UpdateOrderStatusRequest request) {
-    // TODO:: 로그인한 사용자의 ID를 가져오는 로직 구현
-    Long memberId = 1L;
+    long memberId = memberService.getMemberId();
     Order order =
         orderRepository.findByOrderIdAndCustomerIdAndOrderTypeOrThrow(
             orderId, memberId, OrderType.BUY);
@@ -115,8 +114,7 @@ public class OrderService {
 
   public UpdateOrderStatusResponse updateSellOrderStatus(
       final String orderId, final UpdateOrderStatusRequest request) {
-    // TODO:: 로그인한 사용자의 ID를 가져오는 로직 구현
-    Long memberId = 1L;
+    long memberId = memberService.getMemberId();
     Order order =
         orderRepository.findByOrderIdAndCustomerIdAndOrderTypeOrThrow(
             orderId, memberId, OrderType.SELL);
@@ -171,8 +169,7 @@ public class OrderService {
   }
 
   public void deleteOrder(final String orderId) {
-    // TODO: memberId 가져오는 로직 필요
-    Long memberId = 1L;
+    long memberId = memberService.getMemberId();
     Order order = orderRepository.findByOrderIdAndCustomerIdOrThrow(orderId, memberId);
     validateDeleteOrder(order);
     orderRepository.delete(order);
