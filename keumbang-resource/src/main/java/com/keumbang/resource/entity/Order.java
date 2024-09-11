@@ -88,4 +88,8 @@ public class Order extends BaseTimeEntity {
     return String.format(
         "ORD-%s-%s-%s-%s", dateTime, orderType, formattedProductId, formattedCustomerId);
   }
+
+  public void updateOrderStatus(OrderStatus orderStatus) {
+    this.orderStatus = orderStatus;
+  }
 }
