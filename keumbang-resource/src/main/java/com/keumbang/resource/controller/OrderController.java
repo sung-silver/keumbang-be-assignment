@@ -20,8 +20,8 @@ import com.keumbang.resource.controller.dto.request.CreateOrderRequest;
 import com.keumbang.resource.controller.dto.request.UpdateOrderStatusRequest;
 import com.keumbang.resource.controller.dto.response.UpdateOrderStatusResponse;
 import com.keumbang.resource.exception.exceptionType.OrderSuccessType;
+import com.keumbang.resource.service.CreateOrderService;
 import com.keumbang.resource.service.DeleteOrderService;
-import com.keumbang.resource.service.OrderService;
 import com.keumbang.resource.service.UpdateOrderService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderController implements OrderApi {
   private static final String ORDER_URL = "/orders/";
-  private final OrderService orderService;
+  private final CreateOrderService createOrderService;
   private final UpdateOrderService updateOrderService;
   private final DeleteOrderService deleteOrderService;
 
@@ -39,7 +39,7 @@ public class OrderController implements OrderApi {
   @PostMapping
   public ResponseEntity<SuccessResponse<Void>> createOrder(
       @RequestBody @Valid final CreateOrderRequest request) {
-    String orderId = orderService.createOrder(request);
+    String orderId = createOrderService.createOrder(request);
     URI uri = URI.create(ORDER_URL + orderId);
     return ResponseEntity.created(uri)
         .body(SuccessResponse.of(OrderSuccessType.CREATE_ORDER_SUCCESS));
