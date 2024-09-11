@@ -30,9 +30,9 @@ public class OrderService {
   private final ProductRepository productRepository;
   private static final int NEXT_ORDER = 1;
 
-  private static ConcurrentHashMap<OrderStatus, Integer> buyOrderStatusMap =
+  private static final ConcurrentHashMap<OrderStatus, Integer> buyOrderStatusMap =
       new ConcurrentHashMap<>();
-  private static ConcurrentHashMap<OrderStatus, Integer> sellOrderStatusMap =
+  private static final ConcurrentHashMap<OrderStatus, Integer> sellOrderStatusMap =
       new ConcurrentHashMap<>();
 
   static {
