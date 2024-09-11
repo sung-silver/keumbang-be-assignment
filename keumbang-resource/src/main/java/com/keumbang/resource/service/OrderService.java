@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.keumbang.resource.controller.dto.request.CreateOrderRequest;
 import com.keumbang.resource.entity.Order;
 import com.keumbang.resource.entity.Product;
-import com.keumbang.resource.entity.enums.OrderStatus;
 import com.keumbang.resource.entity.enums.OrderType;
 import com.keumbang.resource.entity.enums.ProductType;
 import com.keumbang.resource.exception.CustomException;
@@ -57,22 +56,6 @@ public class OrderService {
             || productType.equals(ProductType.PURCHASE) && orderType.equals(OrderType.BUY);
     if (isInvalidOrder) {
       throw new CustomException(INVALID_ORDER_TYPE);
-    }
-  }
-
-  public void deleteOrder(final String orderId) {
-    long memberId = memberService.getMemberId();
-    Order order = orderRepository.findByOrderIdAndCustomerIdOrThrow(orderId, memberId);
-    validateDeleteOrder(order);
-    orderRepository.delete(order);
-  }
-
-  private void validateDeleteOrder(final Order order) {
-    boolean isInvalidDeleteOrder =
-        order.getOrderStatus().equals(OrderStatus.RECEIVED)
-            || order.getOrderStatus().equals(OrderStatus.DELIVERED);
-    if (isInvalidDeleteOrder) {
-      throw new CustomException(INVALID_DELETE_ORDER);
     }
   }
 }
